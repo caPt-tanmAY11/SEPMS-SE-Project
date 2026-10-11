@@ -1,0 +1,20 @@
+{
+  "name": "sepms-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Software Engineering Portfolio Management System (SEPMS)",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "dev:api": "npm run dev --workspace=sepms-api",
+    "dev:web": "npm run dev --workspace=sepms-web",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
