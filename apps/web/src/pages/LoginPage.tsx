@@ -46,131 +46,138 @@ export const LoginPage: React.FC = () => {
       title: 'Portfolio Manager',
       email: 'pm@sepms.local',
       desc: 'Can create, edit, archive owned portfolios & assign members',
-      border: 'hover:border-indigo-500/50 hover:bg-indigo-950/20'
+      border: 'hover:border-indigo-300 hover:bg-indigo-50/50'
     },
     {
       role: 'DEVELOPER' as UserRole,
       title: 'Software Developer',
       email: 'dev@sepms.local',
       desc: 'Universal read access to all portfolios and engineering assets',
-      border: 'hover:border-emerald-500/50 hover:bg-emerald-950/20'
+      border: 'hover:border-emerald-300 hover:bg-emerald-50/50'
     },
     {
       role: 'EXECUTIVE' as UserRole,
       title: 'Executive Leadership',
       email: 'exec@sepms.local',
-      desc: 'High-level dashboard review and portfolio governance',
-      border: 'hover:border-amber-500/50 hover:bg-amber-950/20'
+      desc: 'Read-only visibility for organizational budget and risk monitoring',
+      border: 'hover:border-amber-300 hover:bg-amber-50/50'
     },
     {
       role: 'ADMIN' as UserRole,
       title: 'System Administrator',
       email: 'admin@sepms.local',
-      desc: 'Full administrative oversight and management permissions',
-      border: 'hover:border-rose-500/50 hover:bg-rose-950/20'
+      desc: 'Full operational administration and security governance access',
+      border: 'hover:border-rose-300 hover:bg-rose-50/50'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center mx-auto shadow-xl shadow-brand-500/20">
-          <Briefcase className="w-6 h-6 text-white" />
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl space-y-8 my-8">
+        {/* Header Branding */}
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 shadow-md shadow-brand-500/20 text-white mb-1">
+            <Briefcase className="w-7 h-7" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Software Engineering Portfolio Management System
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
+            Enterprise portfolio tracking, project health metrics, and software governance.
+          </p>
         </div>
-        <h2 className="mt-4 text-2xl font-bold tracking-tight text-white">
-          Sign In to SEPMS
-        </h2>
-        <p className="mt-1 text-xs text-slate-400">
-          Software Engineering Portfolio Management System
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="glass-panel p-8 rounded-2xl shadow-2xl border border-slate-800">
-          {error && (
-            <div className="mb-5 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
-              <span>{error}</span>
-            </div>
-          )}
+        {error && (
+          <div className="p-4 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs flex items-center gap-3 max-w-md mx-auto shadow-sm">
+            <AlertCircle className="w-5 h-5 shrink-0 text-rose-600" />
+            <span>{error}</span>
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Lab Persona Quick Sign-In */}
+        <div className="glass-card p-6 sm:p-8 rounded-2xl space-y-6">
+          <div className="text-center space-y-1">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center justify-center gap-2">
+              <Shield className="w-4 h-4 text-brand-600" />
+              <span>Select Lab Demo Persona</span>
+            </h2>
+            <p className="text-xs text-slate-500">
+              One-click authentication as any of the four Software Engineering project roles.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {personas.map((p) => (
+              <div
+                key={p.role}
+                onClick={() => handleQuickLogin(p.role)}
+                className={`p-4 rounded-xl border border-slate-200 bg-white cursor-pointer transition-all flex flex-col justify-between ${p.border} shadow-sm group hover:shadow-md`}
+              >
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold block">
+                    {p.role.replace('_', ' ')}
+                  </span>
+                  <h3 className="font-bold text-xs text-slate-900 group-hover:text-brand-600 transition-colors">
+                    {p.title}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 leading-snug">
+                    {p.desc}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-slate-400">{p.email}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-brand-500 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center text-[11px] text-slate-400 font-mono">
+            Password for all demo accounts: <span className="font-bold text-slate-700">Password123!</span>
+          </div>
+        </div>
+
+        {/* Standard Email/Password Form */}
+        <div className="max-w-md mx-auto glass-card p-6 rounded-2xl space-y-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 font-mono text-center">
+            Or Sign In With Email
+          </h3>
+
+          <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Corporate Email
-              </label>
+              <label className="block font-semibold text-slate-700 mb-1">Corporate Email</label>
               <input
                 type="email"
                 required
+                placeholder="pm@sepms.local"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@sepms.local"
-                className="w-full glass-input px-3.5 py-2.5 rounded-lg text-sm text-white placeholder-slate-500"
+                className="glass-input w-full px-3 py-2 rounded-lg"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Password
-              </label>
+              <label className="block font-semibold text-slate-700 mb-1">Password</label>
               <input
                 type="password"
                 required
+                placeholder="••••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full glass-input px-3.5 py-2.5 rounded-lg text-sm text-white placeholder-slate-500"
+                className="glass-input w-full px-3 py-2 rounded-lg"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-2 py-2.5 px-4 bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white rounded-lg text-sm font-semibold shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-2.5 px-4 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
             >
               <KeyRound className="w-4 h-4" />
-              <span>{isSubmitting ? 'Authenticating...' : 'Sign In with Supabase'}</span>
+              <span>{isSubmitting ? 'Authenticating...' : 'Sign In'}</span>
             </button>
           </form>
-
-          {/* Quick Demo Personas Section */}
-          <div className="mt-8 pt-6 border-t border-slate-800/80">
-            <div className="flex items-center gap-2 mb-3">
-              <Shield className="w-4 h-4 text-brand-400" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono">
-                One-Click Demo Personas
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
-              Select a predefined lab persona to test Universal Read Access and RBAC permissions instantly:
-            </p>
-
-            <div className="grid grid-cols-1 gap-2.5">
-              {personas.map((p) => (
-                <button
-                  key={p.role}
-                  type="button"
-                  onClick={() => handleQuickLogin(p.role)}
-                  className={`w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-900/60 transition-all group flex items-center justify-between ${p.border}`}
-                >
-                  <div className="min-w-0 pr-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-200 group-hover:text-white">
-                        {p.title}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-500">{p.email}</span>
-                    </div>
-                    <div className="text-[11px] text-slate-400 mt-0.5 truncate">{p.desc}</div>
-                  </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-brand-400 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 text-center text-xs text-slate-500 font-mono">
-          SE College Lab — Sardar Patel Institute Of Technology
         </div>
       </div>
     </div>

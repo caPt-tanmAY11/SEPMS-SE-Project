@@ -50,29 +50,29 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Welcome & Action Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-800/80">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
             Engineering Portfolio Overview
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Centralized hub for tracking software engineering portfolios, technical assets, and lifecycle status.
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Centralized hub for tracking software engineering initiatives, technical assets, and lifecycle status.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
             to="/portfolios"
-            className="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-2"
+            className="px-4 py-2 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm transition-colors flex items-center gap-2"
           >
-            <FolderKanban className="w-3.5 h-3.5 text-slate-400" />
+            <FolderKanban className="w-3.5 h-3.5 text-slate-500" />
             <span>View All Portfolios</span>
           </Link>
 
           {canCreatePortfolio ? (
             <Link
               to="/portfolios/new"
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-lg shadow-brand-500/20 transition-colors flex items-center gap-2"
+              className="px-4 py-2 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-sm shadow-brand-500/20 transition-colors flex items-center gap-2"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Portfolio</span>
@@ -80,9 +80,9 @@ export const DashboardPage: React.FC = () => {
           ) : (
             <div
               title="Portfolio creation is restricted to Portfolio Managers and Admins"
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-800/60 text-slate-500 border border-slate-800 cursor-not-allowed flex items-center gap-2"
+              className="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed flex items-center gap-2"
             >
-              <Plus className="w-3.5 h-3.5 text-slate-600" />
+              <Plus className="w-3.5 h-3.5 text-slate-400" />
               <span>Create Portfolio (Restricted)</span>
             </div>
           )}
@@ -92,175 +92,181 @@ export const DashboardPage: React.FC = () => {
       {/* Real Metric KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {/* Total Portfolios */}
-        <div className="glass-panel p-6 rounded-xl border border-slate-800/80 relative overflow-hidden group hover:border-slate-700 transition-all">
+        <div className="glass-card p-6 rounded-xl relative overflow-hidden group hover:border-slate-300 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-mono">
               Total Portfolios
             </span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <div className="w-9 h-9 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
               <FolderKanban className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-3xl font-extrabold text-white tracking-tight">
+            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
               {isLoading ? (
-                <div className="h-8 w-16 bg-slate-800 animate-pulse rounded"></div>
+                <div className="h-8 w-16 bg-slate-100 animate-pulse rounded"></div>
               ) : (
                 stats?.totalPortfolios ?? 0
               )}
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[12px] text-slate-500 mt-1 font-medium">
               Software initiatives registered
             </p>
           </div>
         </div>
 
         {/* Active Portfolios */}
-        <div className="glass-panel p-6 rounded-xl border border-slate-800/80 relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+        <div className="glass-card p-6 rounded-xl relative overflow-hidden group hover:border-emerald-300 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-mono">
               Active Portfolios
             </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-3xl font-extrabold text-emerald-400 tracking-tight">
+            <div className="text-3xl font-extrabold text-emerald-600 tracking-tight">
               {isLoading ? (
-                <div className="h-8 w-16 bg-slate-800 animate-pulse rounded"></div>
+                <div className="h-8 w-16 bg-slate-100 animate-pulse rounded"></div>
               ) : (
                 stats?.activePortfolios ?? 0
               )}
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[12px] text-slate-500 mt-1 font-medium">
               Currently ongoing engineering work
             </p>
           </div>
         </div>
 
         {/* Archived Portfolios */}
-        <div className="glass-panel p-6 rounded-xl border border-slate-800/80 relative overflow-hidden group hover:border-slate-700 transition-all">
+        <div className="glass-card p-6 rounded-xl relative overflow-hidden group hover:border-slate-300 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-mono">
               Archived Portfolios
             </span>
-            <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600">
               <Archive className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-3xl font-extrabold text-slate-300 tracking-tight">
+            <div className="text-3xl font-extrabold text-slate-700 tracking-tight">
               {isLoading ? (
-                <div className="h-8 w-16 bg-slate-800 animate-pulse rounded"></div>
+                <div className="h-8 w-16 bg-slate-100 animate-pulse rounded"></div>
               ) : (
                 stats?.archivedPortfolios ?? 0
               )}
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">
-              Preserved for historical audit integrity
+            <p className="text-[12px] text-slate-500 mt-1 font-medium">
+              Preserved historical archives
             </p>
           </div>
         </div>
       </div>
 
-      {/* Universal Read Notice */}
-      <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-start gap-3">
-        <ShieldAlert className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-slate-300 leading-relaxed">
-          <strong className="text-brand-300">Universal Read Access Active:</strong> All employees have full visibility into every portfolio, budget, and engineering metadata per corporate transparency standards (SRS BR-01). Modification permissions are strictly verified by backend RBAC.
+      {/* Role-Specific Overview Info Banner */}
+      <div className="p-4 rounded-xl border border-indigo-100 bg-indigo-50/60 flex items-start gap-3.5">
+        <div className="w-8 h-8 rounded-lg bg-indigo-100 border border-indigo-200 flex items-center justify-center shrink-0 text-indigo-600 mt-0.5">
+          <ShieldAlert className="w-4 h-4" />
+        </div>
+        <div className="text-xs">
+          <span className="font-semibold text-indigo-900 block">
+            Universal Read Access Active (BR-01)
+          </span>
+          <p className="text-indigo-700 mt-0.5 leading-relaxed">
+            You are authenticated as <span className="font-semibold">{user?.fullName}</span> ({user?.role}). All technical assets, milestones, and portfolios across the organization are visible to all authenticated roles for organizational transparency. Mutation is strictly enforced via server-side RBAC.
+          </p>
         </div>
       </div>
 
       {/* Recent Portfolios Table */}
-      <div className="glass-panel rounded-xl border border-slate-800/80 overflow-hidden">
-        <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
           <div>
-            <h3 className="text-sm font-semibold text-white">Recently Created Portfolios</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Most recent additions to the organization's portfolio registry</p>
+            <h3 className="text-sm font-semibold text-slate-900">Recent Engineering Initiatives</h3>
+            <p className="text-xs text-slate-500">Live portfolios retrieved from repository database</p>
           </div>
           <Link
             to="/portfolios"
-            className="text-xs font-medium text-brand-400 hover:text-brand-300 flex items-center gap-1 transition-colors"
+            className="text-xs text-brand-600 hover:text-brand-700 font-semibold flex items-center gap-1 hover:underline"
           >
-            <span>View all</span>
+            <span>View All</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         {isLoading ? (
-          <div className="p-8 text-center text-xs text-slate-500">
-            <div className="animate-pulse space-y-3">
-              <div className="h-6 bg-slate-800/60 rounded"></div>
-              <div className="h-6 bg-slate-800/60 rounded"></div>
-              <div className="h-6 bg-slate-800/60 rounded"></div>
-            </div>
+          <div className="p-10 text-center text-slate-400">
+            <div className="inline-block animate-spin w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full mb-2"></div>
+            <p className="text-xs">Loading live portfolios...</p>
           </div>
         ) : error ? (
-          <div className="p-8 text-center text-xs text-rose-400 flex items-center justify-center gap-2">
-            <AlertCircle className="w-4 h-4" />
-            <span>Failed to load portfolio statistics. Please ensure the backend is running.</span>
+          <div className="p-8 text-center text-rose-600 flex flex-col items-center gap-2">
+            <AlertCircle className="w-6 h-6" />
+            <p className="text-xs font-medium">Failed to load recent portfolios.</p>
           </div>
-        ) : !stats?.recentPortfolios || stats.recentPortfolios.length === 0 ? (
-          <div className="p-12 text-center">
-            <FolderKanban className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-            <p className="text-xs text-slate-400">No portfolios created yet.</p>
+        ) : stats?.recentPortfolios?.length === 0 ? (
+          <div className="p-12 text-center text-slate-400">
+            <FolderKanban className="w-10 h-10 mx-auto text-slate-300 mb-3" />
+            <p className="text-sm font-semibold text-slate-700">No portfolios created yet</p>
+            <p className="text-xs text-slate-400 mt-1">Get started by creating your first engineering portfolio.</p>
             {canCreatePortfolio && (
               <Link
                 to="/portfolios/new"
-                className="inline-block mt-3 px-3 py-1.5 rounded-lg bg-brand-600 text-xs font-medium text-white hover:bg-brand-500 transition-colors"
+                className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
               >
-                Create your first portfolio
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create Portfolio</span>
               </Link>
             )}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-900/80 text-slate-400 font-mono text-[11px] uppercase tracking-wider border-b border-slate-800">
+              <thead className="bg-slate-50/80 text-slate-500 font-mono uppercase text-[10px] tracking-wider border-b border-slate-200">
                 <tr>
-                  <th className="px-5 py-3 font-medium">Portfolio Name</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 font-medium">Target Budget</th>
-                  <th className="px-5 py-3 font-medium">Owner</th>
-                  <th className="px-5 py-3 font-medium">Created</th>
-                  <th className="px-5 py-3 font-medium text-right">Actions</th>
+                  <th className="px-6 py-3.5 font-semibold">Initiative Name</th>
+                  <th className="px-6 py-3.5 font-semibold">Owner</th>
+                  <th className="px-6 py-3.5 font-semibold">Target Budget</th>
+                  <th className="px-6 py-3.5 font-semibold">Status</th>
+                  <th className="px-6 py-3.5 font-semibold">Registered</th>
+                  <th className="px-6 py-3.5 text-right font-semibold">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {stats.recentPortfolios.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-5 py-3.5 font-medium text-slate-200">
-                      <Link to={`/portfolios/${p.id}`} className="hover:text-brand-400 transition-colors">
-                        {p.name}
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {stats?.recentPortfolios.map((portfolio) => (
+                  <tr key={portfolio.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-6 py-4 font-semibold text-slate-900">
+                      <Link to={`/portfolios/${portfolio.id}`} className="hover:text-brand-600 transition-colors">
+                        {portfolio.name}
                       </Link>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium border ${
-                          p.status === 'ACTIVE'
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                            : 'bg-slate-800 text-slate-400 border-slate-700'
-                        }`}
-                      >
-                        {p.status}
+                    <td className="px-6 py-4 text-slate-600">
+                      {portfolio.owner_name}
+                    </td>
+                    <td className="px-6 py-4 font-mono font-medium text-slate-900">
+                      {formatCurrency(portfolio.target_budget, portfolio.currency)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] font-semibold ${
+                        portfolio.status === 'ACTIVE'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${portfolio.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                        {portfolio.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 font-mono text-slate-300">
-                      {formatCurrency(p.target_budget, p.currency)}
+                    <td className="px-6 py-4 text-slate-500 font-mono text-[11px]">
+                      {new Date(portfolio.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-400">
-                      {p.owner_name}
-                    </td>
-                    <td className="px-5 py-3.5 text-slate-500 font-mono text-[11px]">
-                      {new Date(p.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
+                    <td className="px-6 py-4 text-right">
                       <Link
-                        to={`/portfolios/${p.id}`}
-                        className="text-brand-400 hover:text-brand-300 font-medium transition-colors"
+                        to={`/portfolios/${portfolio.id}`}
+                        className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors inline-flex items-center gap-1"
                       >
-                        Details
+                        <span>Details</span>
+                        <ExternalLink className="w-3 h-3 text-slate-500" />
                       </Link>
                     </td>
                   </tr>

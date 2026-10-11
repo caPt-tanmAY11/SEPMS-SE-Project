@@ -82,273 +82,260 @@ export const CreatePortfolioPage: React.FC = () => {
           currency: data.currency,
           startDate: data.startDate,
           endDate: data.endDate,
-          initialMembers,
-          assets
+          assets,
+          initialMembers
         })
       });
     },
-    onSuccess: (created) => {
+    onSuccess: (res: any) => {
       queryClient.invalidateQueries({ queryKey: ['portfolios'] });
       queryClient.invalidateQueries({ queryKey: ['portfolioStats'] });
-      navigate(`/portfolios/${created.id}`);
+      navigate(`/portfolios/${res.data.id}`);
     },
     onError: (err: any) => {
       setServerError(err.message || 'Failed to create portfolio.');
     }
   });
 
-  const onSubmit = (data: PortfolioFormData) => {
-    setServerError(null);
-    createMutation.mutate(data);
+  const toggleMember = (userId: string) => {
+    setSelectedMembers((prev) => 
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+    );
   };
 
   if (!canCreatePortfolio) {
     return (
-      <div className="glass-panel rounded-2xl p-12 text-center max-w-lg mx-auto mt-12 border border-slate-800">
-        <Lock className="w-12 h-12 text-amber-400 mx-auto mb-3" />
-        <h3 className="text-base font-bold text-white">Access Restricted</h3>
-        <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-          Your current persona ({user?.role}) does not have permission to create software portfolios. Only Portfolio Managers and System Administrators may create portfolios.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/portfolios"
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition-colors"
-          >
-            Return to Portfolios Directory
-          </Link>
+      <div className="max-w-2xl mx-auto p-8 glass-card rounded-2xl text-center space-y-4 my-8">
+        <div className="w-12 h-12 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 mx-auto">
+          <Lock className="w-6 h-6" />
         </div>
+        <h2 className="text-lg font-bold text-slate-900">Access Restricted</h2>
+        <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
+          Under Software Engineering governance rules (BR-02), creating portfolios requires the <span className="font-semibold text-slate-700">Portfolio Manager</span> or <span className="font-semibold text-slate-700">Administrator</span> role.
+        </p>
+        <Link
+          to="/portfolios"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-200 transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Return to Portfolios Directory</span>
+        </Link>
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center gap-3 pb-4 border-b border-slate-800/80">
+      <div className="flex items-center gap-3">
         <Link
           to="/portfolios"
-          className="p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors border border-slate-700/60"
+          className="p-2 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 shadow-sm transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-            <FolderPlus className="w-5 h-5 text-brand-400" />
-            <span>Create New Software Portfolio</span>
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <FolderPlus className="w-5 h-5 text-brand-600" />
+            <span>Create Engineering Portfolio</span>
           </h2>
-          <p className="text-xs text-slate-400">
-            Define software engineering project scope, budget allocation, schedule, and team contributors.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Register a new software initiative container with budget allocations and team members.
           </p>
         </div>
       </div>
 
       {serverError && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2.5">
-          <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+        <div className="p-4 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 shrink-0 text-rose-600" />
           <span>{serverError}</span>
         </div>
       )}
 
-      {/* Creation Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="glass-panel p-6 rounded-2xl border border-slate-800/80 space-y-5">
-          <h3 className="text-sm font-semibold text-slate-200 border-b border-slate-800/60 pb-2">
-            1. Basic Metadata
+      <form onSubmit={handleSubmit((data) => createMutation.mutate(data))} className="space-y-6">
+        {/* Core Metadata Card */}
+        <div className="glass-card p-6 rounded-xl space-y-4">
+          <h3 className="text-xs font-semibold text-slate-500 uppercase font-mono tracking-wider border-b border-slate-100 pb-2">
+            1. Initiative Metadata
           </h3>
 
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              Portfolio Name *
-            </label>
-            <input
-              type="text"
-              {...register('name')}
-              placeholder="e.g., Enterprise Payment Gateway Modernization"
-              className="w-full glass-input px-3.5 py-2.5 rounded-lg text-xs text-white placeholder-slate-500"
-            />
-            {errors.name && (
-              <p className="text-rose-400 text-[11px] mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              Description & Objectives
-            </label>
-            <textarea
-              rows={3}
-              {...register('description')}
-              placeholder="Summarize engineering goals, architectural scope, and deliverables..."
-              className="w-full glass-input px-3.5 py-2.5 rounded-lg text-xs text-white placeholder-slate-500"
-            />
-            {errors.description && (
-              <p className="text-rose-400 text-[11px] mt-1">{errors.description.message}</p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-4 text-xs">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Target Budget *
+              <label className="block font-semibold text-slate-700 mb-1.5">
+                Portfolio Name <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., Core Services Cloud Migration"
+                {...register('name')}
+                className="glass-input w-full px-3.5 py-2.5 rounded-lg font-medium"
+              />
+              {errors.name && <p className="text-rose-500 text-[11px] mt-1">{errors.name.message}</p>}
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1.5">
+                Description & Business Objectives
+              </label>
+              <textarea
+                rows={3}
+                placeholder="Describe the software engineering objectives, architectural goals, and scope..."
+                {...register('description')}
+                className="glass-input w-full px-3.5 py-2.5 rounded-lg"
+              />
+              {errors.description && <p className="text-rose-500 text-[11px] mt-1">{errors.description.message}</p>}
+            </div>
+          </div>
+        </div>
+
+        {/* Financial & Schedule Allocation */}
+        <div className="glass-card p-6 rounded-xl space-y-4">
+          <h3 className="text-xs font-semibold text-slate-500 uppercase font-mono tracking-wider border-b border-slate-100 pb-2">
+            2. Budget & Timeline Constraints
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1.5">
+                Target Budget <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
                 <input
                   type="number"
                   step="0.01"
+                  placeholder="150000.00"
                   {...register('targetBudget')}
-                  placeholder="500000"
-                  className="w-full glass-input pl-3.5 pr-16 py-2.5 rounded-lg text-xs font-mono text-white placeholder-slate-500"
+                  className="glass-input w-full pl-8 pr-3.5 py-2.5 rounded-lg font-mono font-medium"
                 />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                  <select
-                    {...register('currency')}
-                    className="bg-slate-800 text-slate-200 text-xs font-mono rounded px-2 py-1 border border-slate-700 focus:outline-none"
-                  >
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="INR">INR (₹)</option>
-                  </select>
-                </div>
+                <DollarSign className="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
               </div>
-              {errors.targetBudget && (
-                <p className="text-rose-400 text-[11px] mt-1">{errors.targetBudget.message}</p>
-              )}
+              {errors.targetBudget && <p className="text-rose-500 text-[11px] mt-1">{errors.targetBudget.message}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                  Start Date *
-                </label>
-                <input
-                  type="date"
-                  {...register('startDate')}
-                  className="w-full glass-input px-3 py-2.5 rounded-lg text-xs text-white font-mono"
-                />
-                {errors.startDate && (
-                  <p className="text-rose-400 text-[11px] mt-1">{errors.startDate.message}</p>
-                )}
-              </div>
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1.5">
+                Currency <span className="text-rose-500">*</span>
+              </label>
+              <select
+                {...register('currency')}
+                className="glass-input w-full px-3.5 py-2.5 rounded-lg font-medium bg-white"
+              >
+                <option value="USD">USD - US Dollar ($)</option>
+                <option value="EUR">EUR - Euro (€)</option>
+                <option value="GBP">GBP - British Pound (£)</option>
+                <option value="INR">INR - Indian Rupee (₹)</option>
+              </select>
+            </div>
 
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                  End Date *
-                </label>
-                <input
-                  type="date"
-                  {...register('endDate')}
-                  className="w-full glass-input px-3 py-2.5 rounded-lg text-xs text-white font-mono"
-                />
-                {errors.endDate && (
-                  <p className="text-rose-400 text-[11px] mt-1">{errors.endDate.message}</p>
-                )}
-              </div>
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1.5">
+                Start Date <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="date"
+                {...register('startDate')}
+                className="glass-input w-full px-3.5 py-2.5 rounded-lg font-mono"
+              />
+              {errors.startDate && <p className="text-rose-500 text-[11px] mt-1">{errors.startDate.message}</p>}
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1.5">
+                End Date <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="date"
+                {...register('endDate')}
+                className="glass-input w-full px-3.5 py-2.5 rounded-lg font-mono"
+              />
+              {errors.endDate && <p className="text-rose-500 text-[11px] mt-1">{errors.endDate.message}</p>}
             </div>
           </div>
         </div>
 
-        {/* Team Members Assignment */}
-        <div className="glass-panel p-6 rounded-2xl border border-slate-800/80 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <Users className="w-4 h-4 text-indigo-400" />
-              <span>2. Team Contributors (Optional)</span>
+        {/* Team Assignments */}
+        <div className="glass-card p-6 rounded-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 className="text-xs font-semibold text-slate-500 uppercase font-mono tracking-wider">
+              3. Assign Team Contributors
             </h3>
-            <span className="text-[11px] text-slate-500 font-mono">
-              Creator will automatically become Portfolio Owner
+            <span className="text-[11px] text-brand-600 font-semibold font-mono">
+              {selectedMembers.length} Selected
             </span>
           </div>
 
-          <p className="text-xs text-slate-400">
-            Select development team members to assign as contributors to this portfolio:
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             {availableUsers
               ?.filter((u) => u.id !== user?.id)
               .map((u) => {
                 const isSelected = selectedMembers.includes(u.id);
                 return (
-                  <button
+                  <div
                     key={u.id}
-                    type="button"
-                    onClick={() => {
-                      if (isSelected) {
-                        setSelectedMembers(selectedMembers.filter((id) => id !== u.id));
-                      } else {
-                        setSelectedMembers([...selectedMembers, u.id]);
-                      }
-                    }}
-                    className={`p-2.5 rounded-lg border text-left flex items-center justify-between transition-colors text-xs ${
+                    onClick={() => toggleMember(u.id)}
+                    className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                       isSelected
-                        ? 'bg-brand-600/15 border-brand-500/40 text-brand-200'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-800/50'
+                        ? 'bg-brand-50 border-brand-300 text-brand-900 shadow-sm'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    <div>
-                      <div className="font-medium text-slate-200">{u.full_name}</div>
-                      <div className="text-[10px] text-slate-500 font-mono">{u.role} • {u.department}</div>
+                    <div className="truncate">
+                      <div className="font-semibold truncate">{u.full_name}</div>
+                      <div className="text-[11px] text-slate-400 font-mono truncate">{u.department}</div>
                     </div>
-                    {isSelected && <CheckCircle2 className="w-4 h-4 text-brand-400 shrink-0" />}
-                  </button>
+                    {isSelected && (
+                      <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0 ml-2" />
+                    )}
+                  </div>
                 );
               })}
           </div>
         </div>
 
-        {/* Linked SE Asset */}
-        <div className="glass-panel p-6 rounded-2xl border border-slate-800/80 space-y-4">
-          <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2 border-b border-slate-800/60 pb-2">
-            <GitBranch className="w-4 h-4 text-emerald-400" />
-            <span>3. Linked Engineering Asset (Optional)</span>
+        {/* Linked SE Assets */}
+        <div className="glass-card p-6 rounded-xl space-y-4">
+          <h3 className="text-xs font-semibold text-slate-500 uppercase font-mono tracking-wider border-b border-slate-100 pb-2">
+            4. Initial Engineering Asset (Optional)
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Asset Name
-              </label>
+              <label className="block font-semibold text-slate-700 mb-1.5">Asset Label</label>
               <input
                 type="text"
+                placeholder="e.g., github.com/org/core-services"
                 {...register('repoName')}
-                placeholder="e.g., github.com/company/core-api"
-                className="w-full glass-input px-3.5 py-2.5 rounded-lg text-xs text-white placeholder-slate-500"
+                className="glass-input w-full px-3.5 py-2.5 rounded-lg"
               />
             </div>
+
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Repository / Asset URL
-              </label>
+              <label className="block font-semibold text-slate-700 mb-1.5">Repository / Jira URL</label>
               <input
                 type="url"
+                placeholder="https://github.com/..."
                 {...register('repoUrl')}
-                placeholder="https://github.com/company/core-api"
-                className="w-full glass-input px-3.5 py-2.5 rounded-lg text-xs text-white placeholder-slate-500"
+                className="glass-input w-full px-3.5 py-2.5 rounded-lg font-mono text-[11px]"
               />
-              {errors.repoUrl && (
-                <p className="text-rose-400 text-[11px] mt-1">{errors.repoUrl.message}</p>
-              )}
+              {errors.repoUrl && <p className="text-rose-500 text-[11px] mt-1">{errors.repoUrl.message}</p>}
             </div>
           </div>
         </div>
 
-        {/* Submission Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4">
+        {/* Submit Actions */}
+        <div className="flex items-center justify-end gap-3 pt-2">
           <Link
             to="/portfolios"
-            className="px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+            className="px-5 py-2.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition-colors"
           >
             Cancel
           </Link>
+
           <button
             type="submit"
             disabled={isSubmitting || createMutation.isPending}
-            className="px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-lg shadow-brand-500/20 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-sm shadow-brand-500/20 transition-all disabled:opacity-50 flex items-center gap-2"
           >
-            <FolderPlus className="w-4 h-4" />
-            <span>{isSubmitting || createMutation.isPending ? 'Persisting Portfolio...' : 'Create Portfolio'}</span>
+            {createMutation.isPending ? 'Creating Portfolio...' : 'Create Portfolio'}
           </button>
         </div>
       </form>
