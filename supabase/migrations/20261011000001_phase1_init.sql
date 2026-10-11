@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+DROP TRIGGER IF EXISTS update_user_profiles_updated_at ON public.user_profiles;
 CREATE TRIGGER update_user_profiles_updated_at
 BEFORE UPDATE ON public.user_profiles
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -58,6 +59,7 @@ CREATE TABLE IF NOT EXISTS public.portfolios (
     CONSTRAINT chk_portfolio_dates CHECK (end_date >= start_date)
 );
 
+DROP TRIGGER IF EXISTS update_portfolios_updated_at ON public.portfolios;
 CREATE TRIGGER update_portfolios_updated_at
 BEFORE UPDATE ON public.portfolios
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -130,12 +132,14 @@ ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- User Profiles Policies:
 -- Any authenticated user can view profiles
+DROP POLICY IF EXISTS "Profiles viewable by authenticated users" ON public.user_profiles;
 CREATE POLICY "Profiles viewable by authenticated users"
 ON public.user_profiles FOR SELECT
 TO authenticated
 USING (true);
 
 -- Users can update their own profile; admins can update any profile
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.user_profiles;
 CREATE POLICY "Users can update their own profile"
 ON public.user_profiles FOR UPDATE
 TO authenticated
@@ -143,12 +147,14 @@ USING (auth.uid() = id);
 
 -- Portfolios Policies:
 -- Universal Read Access: Any authenticated user can read all portfolios
+DROP POLICY IF EXISTS "Portfolios viewable by all authenticated users" ON public.portfolios;
 CREATE POLICY "Portfolios viewable by all authenticated users"
 ON public.portfolios FOR SELECT
 TO authenticated
 USING (true);
 
 -- Only Portfolio Managers or Admins can insert portfolios
+DROP POLICY IF EXISTS "Portfolio creation restricted to managers and admins" ON public.portfolios;
 CREATE POLICY "Portfolio creation restricted to managers and admins"
 ON public.portfolios FOR INSERT
 TO authenticated
@@ -160,6 +166,7 @@ WITH CHECK (
 );
 
 -- Only Portfolio Owners or Admins can update portfolios
+DROP POLICY IF EXISTS "Portfolio update restricted to owner or admin" ON public.portfolios;
 CREATE POLICY "Portfolio update restricted to owner or admin"
 ON public.portfolios FOR UPDATE
 TO authenticated
@@ -178,11 +185,13 @@ USING (
 -- Notice: No DELETE policy is created. Deletion is forbidden by BR-03 and REQ-PORT-05.
 
 -- Portfolio Memberships Policies:
+DROP POLICY IF EXISTS "Memberships viewable by all authenticated users" ON public.portfolio_memberships;
 CREATE POLICY "Memberships viewable by all authenticated users"
 ON public.portfolio_memberships FOR SELECT
 TO authenticated
 USING (true);
 
+DROP POLICY IF EXISTS "Memberships mutable by portfolio owner or admin" ON public.portfolio_memberships;
 CREATE POLICY "Memberships mutable by portfolio owner or admin"
 ON public.portfolio_memberships FOR ALL
 TO authenticated
@@ -199,11 +208,13 @@ USING (
 );
 
 -- SE Assets Policies:
+DROP POLICY IF EXISTS "Assets viewable by all authenticated users" ON public.se_assets;
 CREATE POLICY "Assets viewable by all authenticated users"
 ON public.se_assets FOR SELECT
 TO authenticated
 USING (true);
 
+DROP POLICY IF EXISTS "Assets mutable by portfolio owner or admin" ON public.se_assets;
 CREATE POLICY "Assets mutable by portfolio owner or admin"
 ON public.se_assets FOR ALL
 TO authenticated
@@ -220,11 +231,13 @@ USING (
 );
 
 -- Audit Logs Policies:
+DROP POLICY IF EXISTS "Audit logs viewable by authenticated users" ON public.audit_logs;
 CREATE POLICY "Audit logs viewable by authenticated users"
 ON public.audit_logs FOR SELECT
 TO authenticated
 USING (true);
 
+DROP POLICY IF EXISTS "Audit logs insertable by authenticated users" ON public.audit_logs;
 CREATE POLICY "Audit logs insertable by authenticated users"
 ON public.audit_logs FOR INSERT
 TO authenticated
