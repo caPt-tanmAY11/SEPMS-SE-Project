@@ -3,7 +3,7 @@
 > **College Lab Project — Software Engineering (SE)**  
 > **Prepared by:** Tanmay Vishwakarma & Devraj Sundrani  
 > **Institution:** Sardar Patel Institute of Technology  
-> **Phase Status:** Phase 1 Complete (Awaiting User Approval for Phase 2)
+> **Phase Status:** Phase 2 Complete (Awaiting User Approval for Phase 3)
 
 ---
 
@@ -15,7 +15,7 @@ A portfolio represents a software project, maintenance initiative, or collection
 
 ### Core Modules Roadmap
 1. **Phase 1 (Complete):** Authentication (Supabase Auth), Enterprise Layout, Portfolio Management, Optimistic Concurrency Control (OCC), and Deletion Protection.
-2. **Phase 2 (Planned):** Financial Transactions (cloud costs, vendor, labor with reversal auditing) and Milestone Tracking.
+2. **Phase 2 (Complete):** Financial Transactions (immutable ledger, category tagging, linked offset reversals), Milestone Tracking (checkpoints, completion dates, overdue alerts), and Live Budget Health Summaries.
 3. **Phase 3 (Planned):** Performance Analytics (budget burn-down, velocity) and Early Risk Detection (budget overrun alerts >10%, schedule slippage).
 
 ---
@@ -224,14 +224,17 @@ Open **`http://localhost:5173`** in your browser.
 ```bash
 npm run test
 ```
-Runs 13 end-to-end API integration tests verifying:
+Runs 30 end-to-end API integration tests verifying:
 - Authentication & Bearer token verification
 - Universal Read Access (BR-01) across all roles
 - Portfolio creation and ownership assignment
 - Role-based authorization rejection (403 Forbidden)
 - **Optimistic Concurrency Control (OCC):** Rejection on stale version updates (409 Conflict)
 - **Non-destructive lifecycle:** Safe archiving and prohibition of hard deletions (405 Method Not Allowed)
-- Zod schema validation for budgets, currencies, and dates
+- **Financial Transactions & Reversals:** Recording expenses, currency matching, immutable ledger, double-reversal safeguards (409 Conflict), and prohibition of deletion (405 Method Not Allowed)
+- **Milestones & Deadlines:** Checkpoints, lifecycle status transitions, auto-stamped completion dates, and dynamic overdue detection
+- **Dynamic Summaries:** Accurate mathematical aggregation of net spending, remaining balances, and milestone completion percentages
+- Zod schema validation for budgets, currencies, dates, categories, and justifications
 
 ### Run Build & Lint Verification
 ```bash

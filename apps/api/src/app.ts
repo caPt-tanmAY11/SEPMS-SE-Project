@@ -7,6 +7,8 @@ import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './modules/auth/auth.routes';
 import usersRoutes from './modules/users/users.routes';
 import portfoliosRoutes from './modules/portfolios/portfolios.routes';
+import { transactionsRouter, portfolioTransactionsRouter } from './modules/transactions/transactions.routes';
+import { portfolioMilestonesRouter } from './modules/milestones/milestones.routes';
 import { initDbPool, isUsingMockDb } from './database/db';
 
 export function createApp(): Application {
@@ -41,7 +43,10 @@ export function createApp(): Application {
   // REST API Routes
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/users', usersRoutes);
+  app.use('/api/v1/portfolios/:id/transactions', portfolioTransactionsRouter);
+  app.use('/api/v1/portfolios/:id/milestones', portfolioMilestonesRouter);
   app.use('/api/v1/portfolios', portfoliosRoutes);
+  app.use('/api/v1/transactions', transactionsRouter);
 
   // 404 Handler
   app.use((req: Request, res: Response) => {

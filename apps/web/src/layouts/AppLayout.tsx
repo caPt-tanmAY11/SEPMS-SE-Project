@@ -44,7 +44,7 @@ export const AppLayout: React.FC = () => {
   const navLinks = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
     { to: '/portfolios', label: 'Portfolios', icon: FolderKanban },
-    { to: '/transactions', label: 'Transactions', icon: Receipt, badge: 'Phase 2', disabled: true },
+    { to: '/transactions', label: 'Transactions', icon: Receipt },
     { to: '/analytics', label: 'Analytics & Risks', icon: TrendingUp, badge: 'Phase 3', disabled: true },
     { to: '/settings', label: 'Settings', icon: Settings }
   ];

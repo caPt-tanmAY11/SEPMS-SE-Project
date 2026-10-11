@@ -1,7 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../app';
 import { mockState } from '../database/db';
+import { config } from '../config';
+
+beforeAll(() => {
+  config.database.url = '';
+});
 
 describe('SEPMS Backend API — Phase 1 Test Suite', () => {
   const PM_TOKEN = 'Bearer test-pm-token';

@@ -11,6 +11,8 @@ export interface MockState {
   portfolioMemberships: any[];
   seAssets: any[];
   auditLogs: any[];
+  financialTransactions: any[];
+  milestones: any[];
 }
 
 export const mockState: MockState = {
@@ -142,7 +144,139 @@ export const mockState: MockState = {
       created_at: new Date('2026-01-01T09:00:00Z').toISOString()
     }
   ],
-  auditLogs: []
+  auditLogs: [],
+  financialTransactions: [
+    {
+      id: 'tx-001',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      amount: '45000.00',
+      currency: 'USD',
+      category: 'INFRASTRUCTURE',
+      transaction_date: '2026-02-01',
+      description: 'AWS EKS cluster provisioning and initial NAT gateway reservation',
+      justification: 'Approved core cloud compute infrastructure',
+      transaction_type: 'EXPENSE',
+      reversed_transaction_id: null,
+      is_reversed: false,
+      actor_id: '00000000-0000-0000-0000-000000000001',
+      ip_address: '127.0.0.1',
+      created_at: new Date('2026-02-01T10:00:00Z').toISOString()
+    },
+    {
+      id: 'tx-002',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      amount: '80000.00',
+      currency: 'USD',
+      category: 'LABOR',
+      transaction_date: '2026-02-15',
+      description: 'Q1 External Kubernetes & SRE contractor billing',
+      justification: 'Specialized migration expertise',
+      transaction_type: 'EXPENSE',
+      reversed_transaction_id: null,
+      is_reversed: false,
+      actor_id: '00000000-0000-0000-0000-000000000001',
+      ip_address: '127.0.0.1',
+      created_at: new Date('2026-02-15T11:00:00Z').toISOString()
+    },
+    {
+      id: 'tx-003',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      amount: '12000.00',
+      currency: 'USD',
+      category: 'SOFTWARE_LICENSING',
+      transaction_date: '2026-03-01',
+      description: 'Datadog Enterprise APM and monitoring tier 1',
+      justification: 'Required observability compliance',
+      transaction_type: 'EXPENSE',
+      reversed_transaction_id: null,
+      is_reversed: false,
+      actor_id: '00000000-0000-0000-0000-000000000001',
+      ip_address: '127.0.0.1',
+      created_at: new Date('2026-03-01T09:30:00Z').toISOString()
+    },
+    {
+      id: 'tx-004',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      amount: '5000.00',
+      currency: 'USD',
+      category: 'VENDOR',
+      transaction_date: '2026-03-10',
+      description: 'Penetration testing retainer deposit',
+      justification: 'Third-party compliance review',
+      transaction_type: 'EXPENSE',
+      reversed_transaction_id: null,
+      is_reversed: true,
+      actor_id: '00000000-0000-0000-0000-000000000001',
+      ip_address: '127.0.0.1',
+      created_at: new Date('2026-03-10T14:00:00Z').toISOString()
+    },
+    {
+      id: 'tx-005',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      amount: '5000.00',
+      currency: 'USD',
+      category: 'VENDOR',
+      transaction_date: '2026-03-12',
+      description: 'Reversal: Duplicate retainer billed by security firm',
+      justification: 'Vendor agreed billing error and cancelled duplicate invoice',
+      transaction_type: 'REVERSAL',
+      reversed_transaction_id: 'tx-004',
+      is_reversed: false,
+      actor_id: '00000000-0000-0000-0000-000000000001',
+      ip_address: '127.0.0.1',
+      created_at: new Date('2026-03-12T16:00:00Z').toISOString()
+    }
+  ],
+  milestones: [
+    {
+      id: 'ms-001',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      name: 'Cloud Architecture & Multi-AZ RFC Sign-off',
+      target_date: '2026-01-31',
+      actual_date: '2026-01-28',
+      status: 'COMPLETED',
+      notes: 'Passed architecture review board unanimously',
+      created_by: '00000000-0000-0000-0000-000000000001',
+      created_at: new Date('2026-01-01T09:00:00Z').toISOString(),
+      updated_at: new Date('2026-01-28T17:00:00Z').toISOString()
+    },
+    {
+      id: 'ms-002',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      name: 'Staging Kubernetes Cluster Provisioned',
+      target_date: '2026-03-15',
+      actual_date: '2026-03-14',
+      status: 'COMPLETED',
+      notes: 'Terraform modules applied with zero drift',
+      created_by: '00000000-0000-0000-0000-000000000001',
+      created_at: new Date('2026-01-01T09:00:00Z').toISOString(),
+      updated_at: new Date('2026-03-14T12:00:00Z').toISOString()
+    },
+    {
+      id: 'ms-003',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      name: 'Production Workload Cutover',
+      target_date: '2026-11-15',
+      actual_date: null,
+      status: 'PENDING',
+      notes: 'DNS switchover and blue/green traffic migration',
+      created_by: '00000000-0000-0000-0000-000000000001',
+      created_at: new Date('2026-01-01T09:00:00Z').toISOString(),
+      updated_at: new Date('2026-01-01T09:00:00Z').toISOString()
+    },
+    {
+      id: 'ms-004',
+      portfolio_id: '11111111-1111-1111-1111-111111111111',
+      name: 'SOC2 Type II Readiness Audit',
+      target_date: '2026-02-28',
+      actual_date: null,
+      status: 'PENDING',
+      notes: 'Overdue: external auditor scheduling delayed',
+      created_by: '00000000-0000-0000-0000-000000000001',
+      created_at: new Date('2026-01-01T09:00:00Z').toISOString(),
+      updated_at: new Date('2026-01-01T09:00:00Z').toISOString()
+    }
+  ]
 };
 
 export function initDbPool(): Pool | null {
@@ -457,6 +591,217 @@ function executeMockSql(sql: string, params: any[] = []): QueryResult<any> {
     };
     mockState.auditLogs.push(log);
     return { rows: [log], rowCount: 1, command: 'INSERT', oid: 0, fields: [] };
+  }
+
+  // 10. Financial Transactions queries
+  if (normalized.includes('FINANCIAL_TRANSACTIONS')) {
+    // INSERT transaction
+    if (normalized.startsWith('INSERT INTO')) {
+      const crypto = require('crypto');
+      const [
+        portfolio_id,
+        amount,
+        currency,
+        category,
+        transaction_date,
+        description,
+        justification,
+        transaction_type,
+        reversed_transaction_id,
+        is_reversed,
+        actor_id,
+        ip_address
+      ] = params;
+
+      const newTx = {
+        id: crypto.randomUUID(),
+        portfolio_id,
+        amount: String(amount),
+        currency,
+        category,
+        transaction_date,
+        description,
+        justification: justification || null,
+        transaction_type: transaction_type || 'EXPENSE',
+        reversed_transaction_id: reversed_transaction_id || null,
+        is_reversed: Boolean(is_reversed),
+        actor_id,
+        ip_address: ip_address || null,
+        created_at: new Date().toISOString()
+      };
+      mockState.financialTransactions.unshift(newTx);
+      return { rows: [newTx], rowCount: 1, command: 'INSERT', oid: 0, fields: [] };
+    }
+
+    // UPDATE transaction (marking is_reversed = true)
+    if (normalized.startsWith('UPDATE')) {
+      if (normalized.includes('IS_REVERSED = TRUE') || normalized.includes('IS_REVERSED = $1')) {
+        const id = params[params.length - 1];
+        const tx = mockState.financialTransactions.find((t) => t.id === id);
+        if (tx) {
+          tx.is_reversed = true;
+          return { rows: [tx], rowCount: 1, command: 'UPDATE', oid: 0, fields: [] };
+        }
+        return { rows: [], rowCount: 0, command: 'UPDATE', oid: 0, fields: [] };
+      }
+    }
+
+    // COUNT transactions
+    if (normalized.includes('COUNT(*)')) {
+      const portfolio_id = params[0];
+      const count = mockState.financialTransactions.filter((t) => t.portfolio_id === portfolio_id).length;
+      return { rows: [{ count }], rowCount: 1, command: 'SELECT', oid: 0, fields: [] };
+    }
+
+    // SELECT by ID
+    if (normalized.includes('WHERE T.ID = $1') || normalized.includes('WHERE ID = $1')) {
+      const id = params[0];
+      const tx = mockState.financialTransactions.find((t) => t.id === id);
+      if (!tx) {
+        return { rows: [], rowCount: 0, command: 'SELECT', oid: 0, fields: [] };
+      }
+      const actor = mockState.userProfiles.find((u) => u.id === tx.actor_id);
+      const portfolio = mockState.portfolios.find((p) => p.id === tx.portfolio_id);
+      return {
+        rows: [{
+          ...tx,
+          actor_name: actor?.full_name || 'System',
+          portfolio_name: portfolio?.name || 'Unknown Portfolio'
+        }],
+        rowCount: 1,
+        command: 'SELECT',
+        oid: 0,
+        fields: []
+      };
+    }
+
+    // SELECT by portfolio_id
+    if (normalized.includes('WHERE T.PORTFOLIO_ID = $1') || normalized.includes('WHERE PORTFOLIO_ID = $1')) {
+      const portfolioId = params[0];
+      const list = mockState.financialTransactions
+        .filter((t) => t.portfolio_id === portfolioId)
+        .map((tx) => {
+          const actor = mockState.userProfiles.find((u) => u.id === tx.actor_id);
+          const portfolio = mockState.portfolios.find((p) => p.id === tx.portfolio_id);
+          return {
+            ...tx,
+            actor_name: actor?.full_name || 'System',
+            portfolio_name: portfolio?.name || 'Unknown Portfolio'
+          };
+        })
+        .sort((a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime());
+
+      return { rows: list, rowCount: list.length, command: 'SELECT', oid: 0, fields: [] };
+    }
+
+    // Global SELECT all transactions
+    const all = mockState.financialTransactions
+      .map((tx) => {
+        const actor = mockState.userProfiles.find((u) => u.id === tx.actor_id);
+        const portfolio = mockState.portfolios.find((p) => p.id === tx.portfolio_id);
+        return {
+          ...tx,
+          actor_name: actor?.full_name || 'System',
+          portfolio_name: portfolio?.name || 'Unknown Portfolio'
+        };
+      })
+      .sort((a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime());
+
+    return { rows: all, rowCount: all.length, command: 'SELECT', oid: 0, fields: [] };
+  }
+
+  // 11. Milestones queries
+  if (normalized.includes('MILESTONES')) {
+    // INSERT milestone
+    if (normalized.startsWith('INSERT INTO')) {
+      const crypto = require('crypto');
+      const [
+        portfolio_id,
+        name,
+        target_date,
+        actual_date,
+        status,
+        notes,
+        created_by
+      ] = params;
+
+      const newMs = {
+        id: crypto.randomUUID(),
+        portfolio_id,
+        name,
+        target_date,
+        actual_date: actual_date || null,
+        status: status || 'PENDING',
+        notes: notes || '',
+        created_by,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      mockState.milestones.push(newMs);
+      return { rows: [newMs], rowCount: 1, command: 'INSERT', oid: 0, fields: [] };
+    }
+
+    // UPDATE milestone
+    if (normalized.startsWith('UPDATE')) {
+      // params: [status, actual_date, notes, id]
+      const status = params[0];
+      const actual_date = params[1];
+      const notes = params[2];
+      const id = params[3];
+      const ms = mockState.milestones.find((m) => m.id === id);
+      if (ms) {
+        ms.status = status;
+        ms.actual_date = actual_date;
+        if (notes !== undefined && notes !== null) ms.notes = notes;
+        ms.updated_at = new Date().toISOString();
+        return { rows: [ms], rowCount: 1, command: 'UPDATE', oid: 0, fields: [] };
+      }
+      return { rows: [], rowCount: 0, command: 'UPDATE', oid: 0, fields: [] };
+    }
+
+    // COUNT milestones
+    if (normalized.includes('COUNT(*)')) {
+      const portfolio_id = params[0];
+      const count = mockState.milestones.filter((m) => m.portfolio_id === portfolio_id).length;
+      return { rows: [{ count }], rowCount: 1, command: 'SELECT', oid: 0, fields: [] };
+    }
+
+    // SELECT by ID
+    if (normalized.includes('WHERE M.ID = $1') || normalized.includes('WHERE ID = $1')) {
+      const id = params[0];
+      const ms = mockState.milestones.find((m) => m.id === id);
+      if (!ms) {
+        return { rows: [], rowCount: 0, command: 'SELECT', oid: 0, fields: [] };
+      }
+      const creator = mockState.userProfiles.find((u) => u.id === ms.created_by);
+      return {
+        rows: [{
+          ...ms,
+          creator_name: creator?.full_name || 'System'
+        }],
+        rowCount: 1,
+        command: 'SELECT',
+        oid: 0,
+        fields: []
+      };
+    }
+
+    // SELECT by portfolio_id
+    if (normalized.includes('WHERE M.PORTFOLIO_ID = $1') || normalized.includes('WHERE PORTFOLIO_ID = $1')) {
+      const portfolioId = params[0];
+      const list = mockState.milestones
+        .filter((m) => m.portfolio_id === portfolioId)
+        .map((ms) => {
+          const creator = mockState.userProfiles.find((u) => u.id === ms.created_by);
+          return {
+            ...ms,
+            creator_name: creator?.full_name || 'System'
+          };
+        })
+        .sort((a, b) => new Date(a.target_date).getTime() - new Date(b.target_date).getTime());
+
+      return { rows: list, rowCount: list.length, command: 'SELECT', oid: 0, fields: [] };
+    }
   }
 
   // Default empty result

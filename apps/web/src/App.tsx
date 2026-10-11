@@ -8,6 +8,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { PortfoliosPage } from './pages/PortfoliosPage';
 import { CreatePortfolioPage } from './pages/CreatePortfolioPage';
 import { PortfolioDetailPage } from './pages/PortfolioDetailPage';
+import { TransactionsPage } from './pages/TransactionsPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 const queryClient = new QueryClient({
@@ -61,6 +62,7 @@ export function App() {
               <Route path="portfolios" element={<PortfoliosPage />} />
               <Route path="portfolios/new" element={<CreatePortfolioPage />} />
               <Route path="portfolios/:id" element={<PortfolioDetailPage />} />
+              <Route path="transactions" element={<TransactionsPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
 

@@ -84,6 +84,26 @@ router.get(
 );
 
 /**
+ * GET /api/v1/portfolios/:id/summary
+ * Universal Read Access: Returns live calculated financial & milestone health metrics.
+ */
+router.get(
+  '/:id/summary',
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const summary = await PortfolioService.getSummary(req.params.id);
+      res.json({
+        success: true,
+        data: summary
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
  * POST /api/v1/portfolios
  * Creates a portfolio. Restricted to PORTFOLIO_MANAGER and ADMIN.
  * Assigns creator as Portfolio Owner.

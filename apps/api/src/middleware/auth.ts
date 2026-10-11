@@ -58,13 +58,57 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     const demoUserId = DEMO_TOKEN_MAP[token];
     const user = mockState.userProfiles.find((u) => u.id === demoUserId);
     if (user) {
+      let resolvedId = user.id;
+      let resolvedRole = user.role;
+      let resolvedFullName = user.full_name;
+
+      // If connected to a live database, synchronize with actual public.user_profiles
+      if (!isUsingMockDb()) {
+        try {
+          const dbUserRes = await query(
+            'SELECT id, role, full_name, department, employee_id FROM public.user_profiles WHERE email = $1',
+            [user.email]
+          );
+          if (dbUserRes.rows.length > 0) {
+            resolvedId = dbUserRes.rows[0].id;
+            resolvedRole = dbUserRes.rows[0].role;
+            resolvedFullName = dbUserRes.rows[0].full_name;
+          } else {
+            // Ensure demo identity exists in auth.users and user_profiles
+            try {
+              await query(
+                `INSERT INTO auth.users (id, aud, role, email, email_confirmed_at)
+                 VALUES ($1, 'authenticated', 'authenticated', $2, NOW())
+                 ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email`,
+                [user.id, user.email]
+              );
+            } catch {
+              // Ignore if auth.users direct insert is restricted
+            }
+
+            const upsertRes = await query(
+              `INSERT INTO public.user_profiles (id, email, full_name, department, employee_id, role)
+               VALUES ($1, $2, $3, $4, $5, $6)
+               ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email
+               RETURNING id, role, full_name`,
+              [user.id, user.email, user.full_name, user.department, user.employee_id, user.role]
+            );
+            if (upsertRes.rows.length > 0) {
+              resolvedId = upsertRes.rows[0].id;
+            }
+          }
+        } catch (e) {
+          console.warn('[Auth Middleware] Live demo profile resolution warning:', e);
+        }
+      }
+
       req.user = {
-        id: user.id,
+        id: resolvedId,
         email: user.email,
-        fullName: user.full_name,
+        fullName: resolvedFullName,
         department: user.department,
         employeeId: user.employee_id,
-        role: user.role
+        role: resolvedRole
       };
       next();
       return;

@@ -11,7 +11,7 @@
 - **ORM policy:** No ORM; specifically no Prisma
 - **SQL driver:** `pg` in the Express backend
 - **Authentication:** Supabase Auth
-- **Current milestone:** Phase 1 Complete (Awaiting User Review for Phase 2)
+- **Current milestone:** Phase 2 Complete (Awaiting User Review for Phase 3)
 - **Overall state:** Complete
 - **Current phase state:** Complete
 - **Last updated:** 2026-10-11
@@ -28,7 +28,7 @@ Implement the three modules sequentially:
 2. Transaction and Milestone Tracking.
 3. Analytics and Basic Risk Assessment.
 
-**Only Phase 1 is authorized.** Do not begin Phase 2 until the user explicitly approves Phase 1. Do not begin Phase 3 until the user explicitly approves Phase 2.
+**Phase 1 & Phase 2 are implemented.** Do not begin Phase 3 until the user explicitly approves Phase 2.
 
 Deferred unless the user requests otherwise: report generation, recurring emails, real GitHub/Jira/CI/CD/ERP integrations, corporate SSO, microservices/Kubernetes, and advanced integration-dependent technical debt.
 
@@ -40,7 +40,7 @@ Use only these state values: `Not started`, `In progress`, `Blocked`, `Needs use
 |---|---|---|
 | Phase 0 — Requirements/environment inspection | Complete | Read all instruction files and all four PDFs; inspected environment (Node 24, npm 11, Docker 29). |
 | Phase 1 — Supabase Auth, app layout, Portfolio Management | Complete | Implemented & verified: layout, dashboard, portfolio CRUD, OCC, archiving, RBAC, 13/13 tests passed, build passed, browser demo recorded. |
-| Phase 2 — Transactions and milestones | Not started | Requires explicit user approval after Phase 1. |
+| Phase 2 — Transactions and milestones | Complete | Implemented & verified: financial ledger, linked reversals, milestones lifecycle, overdue detection, summary calculations, 30/30 tests passed. |
 | Phase 3 — Analytics and basic risks | Not started | Requires explicit user approval after Phase 2. |
 
 ## 4. Phase 0 — Inspection checklist
@@ -126,16 +126,45 @@ Use only these state values: `Not started`, `In progress`, `Blocked`, `Needs use
 
 ## 6. Phase 2 — Transactions and Milestones
 
-**State:** Not started — do not begin without explicit user approval.
+**State:** Complete
 
-- [ ] Financial transaction form and history.
-- [ ] Milestone form and history.
-- [ ] Owner/admin backend permissions.
-- [ ] Immutable original records and linked reversals for financial corrections.
-- [ ] Reversal limits and idempotency tests.
-- [ ] Currency validation and honest conversion handling.
-- [ ] Portfolio summaries updated from persisted records.
-- [ ] Tests and `README.md`/`STATUS.md` updated.
+### Implementation checklist
+
+- [x] Financial transaction form and history.
+- [x] Milestone form and history.
+- [x] Owner/admin backend permissions.
+- [x] Immutable original records and linked reversals for financial corrections.
+- [x] Reversal limits and idempotency tests (cannot reverse twice, cannot reverse a reversal).
+- [x] Currency validation and honest conversion handling (cross-currency mixing rejected).
+- [x] Portfolio summaries updated dynamically from persisted records.
+- [x] Overdue milestone detection implemented.
+- [x] Permanent deletion prohibited on transactions and milestones (HTTP 405 Method Not Allowed).
+- [x] Dedicated global ledger page (`/transactions`) with multi-filter and direct portfolio links.
+- [x] Automated tests and `README.md`/`STATUS.md` updated.
+
+### Phase 2 verification record
+
+| Check | Command / method | Result | Notes |
+|---|---|---|---|
+| SQL Migration | `supabase/migrations/20261011000002_phase2_transactions_milestones.sql` | Ready / Verified | Pure PostgreSQL DDL for `financial_transactions` and `milestones` with RLS & triggers |
+| Transaction CRUD/Reversal | Supertest & Vitest | Passed | Expense creation, currency checks, archived portfolio checks, linked reversals |
+| Immutability Checks | Supertest & Vitest | Passed | `DELETE` rejected with 405 `TRANSACTION_DELETION_PROHIBITED` & `MILESTONE_DELETION_PROHIBITED` |
+| Milestone Lifecycle | Supertest & Vitest | Passed | Creation, status transition to COMPLETED, overdue detection on past pending dates |
+| Dynamic Summaries | `GET /api/v1/portfolios/:id/summary` | Passed | Math verified: Target budget, Net spending, remaining balance, utilization % |
+| Automated tests | `npm run test` | Passed | 30 of 30 tests passed across Phase 1 and Phase 2 test suites |
+| Type-check / build | `npm run build` | Passed | Zero TypeScript errors across API & Web; Vite production bundle built |
+
+### Phase 2 handover notes
+
+- Files/features implemented:
+  - `apps/api/src/modules/transactions`: Routes, controller, service, and Zod schemas for recording expenses, linked reversals, global ledger listing, and 405 delete rejections.
+  - `apps/api/src/modules/milestones`: Routes, controller, service, and Zod schemas for creating milestones, lifecycle status transitions, overdue computation, and 405 delete rejections.
+  - `apps/api/src/modules/portfolios/portfolios.service.ts`: `getSummary` endpoint aggregating net spend, remaining budget, utilization, and milestone stats.
+  - `apps/api/src/__tests__/phase2.test.ts`: 17 new automated integration tests (totaling 30 tests in the project).
+  - `apps/web/src/pages/TransactionsPage.tsx`: Full global ledger page with search, filters (category, currency, type), metrics banner, and portfolio links.
+  - `apps/web/src/pages/PortfolioDetailPage.tsx`: Financial Health card with utilization gauge, Transactions Tab (with record expense & reverse modals), and Milestones Tab (with add milestone & status actions).
+  - `supabase/migrations/20261011000002_phase2_transactions_milestones.sql`: Phase 2 DDL.
+- User review: **Phase 2 Complete — Ready for user review. Awaiting explicit user approval before beginning Phase 3.**
 
 ## 7. Phase 3 — Analytics and Basic Risk Assessment
 

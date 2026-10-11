@@ -315,4 +315,85 @@ export class PortfolioService {
 
     return this.getById(id);
   }
+
+  /**
+   * Retrieves dynamically aggregated financial and milestone health summary
+   */
+  static async getSummary(id: string) {
+    const portfolio = await this.getById(id);
+    if (!portfolio) {
+      const err: any = new Error(`Portfolio with ID '${id}' not found.`);
+      err.status = 404;
+      err.code = 'PORTFOLIO_NOT_FOUND';
+      throw err;
+    }
+
+    // 1. Fetch transactions
+    const txRes = await query(
+      `SELECT amount, transaction_type, is_reversed FROM public.financial_transactions WHERE portfolio_id = $1`,
+      [id]
+    );
+
+    let totalExpenses = 0;
+    let totalReversals = 0;
+
+    for (const tx of txRes.rows) {
+      const amt = parseFloat(tx.amount);
+      if (tx.transaction_type === 'EXPENSE') {
+        totalExpenses += amt;
+      } else if (tx.transaction_type === 'REVERSAL') {
+        totalReversals += amt;
+      }
+    }
+
+    const netSpending = Math.max(0, totalExpenses - totalReversals);
+    const targetBudget = parseFloat(portfolio.target_budget);
+    const remainingBudget = targetBudget - netSpending;
+    const utilizationPercentage = targetBudget > 0 ? Number(((netSpending / targetBudget) * 100).toFixed(1)) : 0;
+
+    // 2. Fetch milestones
+    const msRes = await query(
+      `SELECT status, target_date FROM public.milestones WHERE portfolio_id = $1`,
+      [id]
+    );
+
+    const today = new Date().toISOString().split('T')[0];
+    let completed = 0;
+    let pending = 0;
+    let missed = 0;
+    let overdue = 0;
+
+    for (const ms of msRes.rows) {
+      if (ms.status === 'COMPLETED') completed++;
+      else if (ms.status === 'MISSED') missed++;
+      else if (ms.status === 'PENDING') {
+        pending++;
+        if (ms.target_date < today) overdue++;
+      }
+    }
+
+    const totalMilestones = msRes.rows.length;
+    const completionRate = totalMilestones > 0 ? Number(((completed / totalMilestones) * 100).toFixed(1)) : 0;
+
+    return {
+      portfolioId: id,
+      portfolioName: portfolio.name,
+      currency: portfolio.currency,
+      targetBudget,
+      totalExpenses,
+      totalReversals,
+      netSpending,
+      remainingBudget,
+      utilizationPercentage,
+      milestoneStats: {
+        total: totalMilestones,
+        completed,
+        pending,
+        missed,
+        overdue,
+        completionRate
+      }
+    };
+  }
 }
+
